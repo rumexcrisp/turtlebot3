@@ -1,0 +1,331 @@
+#!/bin/bash
+# @author Fedor Vlasov fedor.vlasov@de.kaercher.com
+# @copyright Alfred Kaercher SE & Co. KG
+
+#default_proxy="emeaproxy.akad.kaercher.com:3128"
+default_proxy="de10-16222.de.kaercher.com:3128"
+
+# some pretty colors for output
+OKBLUE='\033[94m'
+OKGREEN='\033[92m'
+WARNING='\033[93m'
+ENDC='\033[0m'
+BOLD='\033[1m'
+
+function log_info() {
+    echo -e "[$(date --utc +%FT%TZ)] ${BOLD}INFO: ${*}${ENDC}"
+}
+
+function log_warn() {
+    echo -e "[$(date --utc +%FT%TZ)] ${BOLD}${WARNING}WARN: ${*}${ENDC}"
+}
+
+function usage() {
+    echo "Enable/disable proxy system wide"
+    echo "Usage:"
+    echo "  ak_proxy (off|on|<proxy>)"
+    echo ""
+    echo "Arguments:"
+    echo "  -h, --help  Show this help and exit"
+    echo "  off         turn off the proxy"
+    echo "  on          turn on default proxy ${default_proxy}"
+    echo "  <proxy>     proxy like host:port, WO any protocol prefixes like http:// !!"
+    echo "  cl, clear   Start a new shell without proxy ENV variables"
+    echo "  st, status  Show current proxy staus on|off"
+}
+
+function clear_proxy_env() {
+    # this will not affect the parent process though!
+    unset http_proxy
+    unset https_proxy
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+}
+
+function show_proxy_status() {
+    # print current proxy status
+    # TODO: detect unclean state
+    # shellcheck disable=SC2154
+    if [[ -n $http_proxy ]]; then
+        proxy=${http_proxy#"http://"}
+        proxy=${proxy%"/"}
+        log_info "${OKBLUE}${BOLD}ENABLED: ${proxy} ${ENDC}"
+    else
+        log_info "${OKGREEN}${BOLD}DISABLED${ENDC}"
+    fi
+}
+
+# all functions in the form <tool>_proxy will accept either "off"
+# or any other string which will be handled as "on", also they assume
+# the 'proxy' variable to be set in the "on" case
+
+# All functions have to be designed such that they work on a developer PC
+# and in the production environment. So carefully check for tool existance, write permissions, etc...
+
+# All functions must be safe to rerun!!! This means when you change files and run the ak_proxy on command
+# multiple times in a row, the file should not be corrupted in any way, this means the second run
+# must skip the action if it was already performed.
+
+# TODO: Check if system is ro and remount if necessary, we are using sudo anyway...
+
+function message_proxy() {
+    if [[ "$1" != "off" ]]; then # on
+        log_info "${OKBLUE}${BOLD}ENABLING ${proxy}${ENDC}"
+    else
+        log_info "${OKBLUE}${BOLD}DISABLING${ENDC}"
+    fi
+}
+
+function export_file_proxy() {
+    # will toggle the proxy in a file where the proxy env vars are exported
+    # such as bashrc files or similar things
+    file="$1"
+    mode="$2"
+    [[ -f "$file" ]] || return
+    file_owner=$(sudo ls -l "$file" | awk '{print $3}')
+    log_info "adopting environment variables in ${file}"
+    if [[ $mode != "off" ]]; then                         # on
+        if ! grep -qi "export http_proxy" "${file}"; then # doesn't exist already
+            echo -e "# Proxy Configuration" | sudo -u "$file_owner" tee -a "${file}" >/dev/null
+            echo -e "export http_proxy=http://${proxy}/" | sudo -u "$file_owner" tee -a "${file}" >/dev/null
+            echo -e "export https_proxy=http://${proxy}/" | sudo -u "$file_owner" tee -a "${file}" >/dev/null
+            echo -e "export HTTP_PROXY=http://${proxy}/" | sudo -u "$file_owner" tee -a "${file}" >/dev/null
+            echo -e "export HTTPS_PROXY=http://${proxy}/" | sudo -u "$file_owner" tee -a "${file}" >/dev/null
+        fi
+        sudo -u "$file_owner" sed -i '/unset http_proxy/d' "${file}"
+        sudo -u "$file_owner" sed -i '/unset https_proxy/d' "${file}"
+        sudo -u "$file_owner" sed -i '/unset HTTP_PROXY/d' "${file}"
+        sudo -u "$file_owner" sed -i '/unset HTTPS_PROXY/d' "${file}"
+    else # off
+        sudo -u "$file_owner" sed -i '/^# Proxy Configura/d' "${file}"
+        sudo -u "$file_owner" sed -i '/http_proxy/d' "${file}"
+        sudo -u "$file_owner" sed -i '/https_proxy/d' "${file}"
+        sudo -u "$file_owner" sed -i '/HTTP_PROXY/d' "${file}"
+        sudo -u "$file_owner" sed -i '/HTTPS_PROXY/d' "${file}"
+        echo -e "unset http_proxy" | sudo -u "$file_owner" tee -a "${file}" >/dev/null
+        echo -e "unset https_proxy" | sudo -u "$file_owner" tee -a "${file}" >/dev/null
+        echo -e "unset HTTP_PROXY" | sudo -u "$file_owner" tee -a "${file}" >/dev/null
+        echo -e "unset HTTPS_PROXY" | sudo -u "$file_owner" tee -a "${file}" >/dev/null
+    fi
+}
+
+function environment_file_proxy() {
+    # will toggle the proxy variables in an environment file such as /etc/environent
+    # or environment files used for systemd services or to preload env vars
+    mode="$1"
+    env_hash=$(md5sum /etc/environment)
+    if [[ $mode != "off" ]]; then                       # on
+        if ! grep -qi http_proxy /etc/environment; then # doesn't exist already
+            echo -e "# Proxy Configuration" | sudo tee -a /etc/environment >/dev/null
+            echo -e "http_proxy=http://${proxy}/" | sudo tee -a /etc/environment >/dev/null
+            echo -e "https_proxy=http://${proxy}/" | sudo tee -a /etc/environment >/dev/null
+            echo -e "HTTP_PROXY=http://${proxy}/" | sudo tee -a /etc/environment >/dev/null
+            echo -e "HTTPS_PROXY=http://${proxy}/" | sudo tee -a /etc/environment >/dev/null
+        fi
+    else # off
+        sudo sed -i '/^# Proxy Con/d' /etc/environment
+        sudo sed -i '/http_proxy/d' /etc/environment
+        sudo sed -i '/https_proxy/d' /etc/environment
+        sudo sed -i '/HTTP_PROXY/d' /etc/environment
+        sudo sed -i '/HTTPS_PROXY/d' /etc/environment
+    fi
+    env_hash_new=$(md5sum /etc/environment)
+    [[ "$env_hash" != "$env_hash_new" ]] &&
+        log_warn "/etc/environment file has been changed, relogin/reboot for full effect!"
+}
+
+function git_proxy() {
+    command -v git 2 &>/dev/null || return
+    git_config_file="$1"
+    [[ -f "$git_config_file" ]] || return
+    log_info "adjusting git repo URLs in $git_config_file"
+    file_owner=$(sudo ls -l "$git_config_file" | awk '{print $3}')
+    if [[ "$2" != "off" ]]; then # on
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --unset-all url.ssh://git@git.app.kaercher.com:7999.insteadof
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --unset-all url.ssh://git@git-ssh.app.kaercher.com:7999.insteadof
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --add url.ssh://git@git-int.app.kaercher.com:7999.insteadof ssh://git@git.app.kaercher.com:7999
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --add url.ssh://git@git-int.app.kaercher.com:7999.insteadof ssh://git@git-ssh.app.kaercher.com:7999
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --add url.ssh://git@git-int.app.kaercher.com:7999.insteadof http://git.app.kaercher.com/scm
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --add url.ssh://git@git-int.app.kaercher.com:7999.insteadof https://git.app.kaercher.com/scm
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --unset-all http.proxy
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --unset-all https.proxy
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --add http.proxy "http://${proxy}"
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --add https.proxy "http://${proxy}"
+    else # off
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --unset-all url.ssh://git@git-int.app.kaercher.com:7999.insteadof
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --add url.ssh://git@git-ssh.app.kaercher.com:7999.insteadof ssh://git@git-int.app.kaercher.com:7999
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --add url.ssh://git@git-ssh.app.kaercher.com:7999.insteadof https://git.app.kaercher.com/scm
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --add url.ssh://git@git-ssh.app.kaercher.com:7999.insteadof http://git.app.kaercher.com/scm
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --unset-all http.proxy
+        sudo -i -u "$file_owner" git config --file "$git_config_file" --unset-all https.proxy
+    fi
+
+}
+
+function gnome_proxy() {
+    command -v gsettings 2 &>/dev/null || return
+    log_info "changing gnome proxy settings"
+    if [[ "$1" != "off" ]]; then # on
+        proxy_host=${proxy/:*/}
+        proxy_port=${proxy/*:/}
+        gsettings set org.gnome.system.proxy mode 'manual'
+        gsettings set org.gnome.system.proxy.http host "$proxy_host"
+        gsettings set org.gnome.system.proxy.http port "$proxy_port"
+        gsettings set org.gnome.system.proxy.https host "$proxy_host"
+        gsettings set org.gnome.system.proxy.https port "$proxy_port"
+    else # off
+        gsettings set org.gnome.system.proxy mode 'none'
+    fi
+}
+
+function apt_proxy() {
+    log_info "configuring apt proxy"
+    if [[ "$1" != "off" ]]; then # on
+        # TODO: check whether socks and ftp proxy are realy needed here
+        apt_proxy_conf="$(mktemp)"
+        cat >"${apt_proxy_conf}" <<EOL
+Acquire::http::Proxy "http://${proxy}/";
+Acquire::https::Proxy "http://${proxy}/";
+Acquire::ftp::Proxy "ftp://${proxy}/";
+Acquire::socks::Proxy "socks://${proxy}/";
+EOL
+        sudo mv "${apt_proxy_conf}" /etc/apt/apt.conf.d/00akproxy
+    else # off
+        sudo rm --verbose /etc/apt/apt.conf.d/00akproxy 2>/dev/null || true
+    fi
+}
+
+function wget_proxy() {
+    file="$1"
+    mode="$2"
+    log_info "changing wget proxy settings in ${file}"
+    sudo_if_necessary=""
+    if [[ ! -w $(dirname "${file}") ]]; then
+        sudo_if_necessary="sudo"
+    fi
+    if [[ "$mode" != "off" ]]; then # on
+        if [[ ! -f "${file}" ]]; then
+            wgetrc_tmp=$(mktemp)
+            cat >"${wgetrc_tmp}" <<EOL
+use_proxy=yes
+http_proxy=${proxy}
+https_proxy=${proxy}
+EOL
+            $sudo_if_necessary mv "${wgetrc_tmp}" "${file}"
+        fi
+        $sudo_if_necessary sed -i 's/use_proxy=no/use_proxy=yes/g' "${file}" || true
+    else # off
+        $sudo_if_necessary sed -i 's/use_proxy=yes/use_proxy=no/g' "${file}" 2>/dev/null || true
+    fi
+}
+
+function docker_proxy() {
+    log_info "reconfiguring docker proxy"
+    if [[ "$1" != "off" ]]; then # on
+        # enable proxy for docker daemon
+        sudo mkdir /etc/systemd/system/docker.service.d &>/dev/null || true
+        docker_proxy_conf=$(mktemp)
+        cat >"$docker_proxy_conf" <<EOL
+[Service]
+Environment="HTTP_PROXY=http://${proxy}/"
+Environment="HTTPS_PROXY=http://${proxy}/"
+EOL
+        sudo cp "$docker_proxy_conf" /etc/systemd/system/docker.service.d/http-proxy.conf
+        sudo chmod 0644 /etc/systemd/system/docker.service.d/http-proxy.conf
+    else # off
+        sudo rm --verbose /etc/systemd/system/docker.service.d/http-proxy.conf 2>/dev/null || true
+    fi
+    sudo systemctl daemon-reload
+    sudo systemctl restart --no-block docker.service || true
+}
+
+function ipp_proxy() {
+    # write http proxy value into the ipp client config file
+    ipp_client_conf=/data/service/ipp/ippClient.conf
+    if test -f "$ipp_client_conf"; then
+        tmp_conf=$(mktemp)
+        log_info "Configuring proxy for IPP communication in $ipp_client_conf"
+        sudo_if_necessary=""
+        if [[ ! -w "$(dirname ${ipp_client_conf})" ]]; then
+            sudo_if_necessary="sudo"
+        fi
+        if [[ "$1" != "off" ]]; then
+            # split proxy into host and port elements
+            proxy_host=${proxy/:*/}
+            proxy_port=${proxy/*:/}
+            # TODO: ensure there are no comments in the IPP Config file, jq cant handle those!
+            jq --arg host "$proxy_host" --argjson port "$proxy_port" '.mqttsettings.ProxyHost = $host | .mqttsettings.ProxyPort = $port | .mqttsettings.ProxyEnabled = true' "$ipp_client_conf" >"$tmp_conf"
+            $sudo_if_necessary mv "$tmp_conf" "$ipp_client_conf"
+        else
+            jq '.mqttsettings.ProxyEnabled = false' "$ipp_client_conf" >"$tmp_conf"
+            $sudo_if_necessary mv "$tmp_conf" "$ipp_client_conf"
+        fi
+        rm "$tmp_conf" 2 &>/dev/null || true
+    fi
+}
+
+function set_kaercher_dns() {
+    if [[ "$1" != "off" ]] && [[ "$proxy" == "$default_proxy" ]]; then # on
+        log_info "setting up kaercher net netplan"
+        dns_netplan_conf=$(mktemp)
+        echo "\
+network:
+  version: 2
+  ethernets:
+    enp0s31f6:
+      nameservers:
+        search: [de.kaercher.com]" >"${dns_netplan_conf}"
+        sudo mv "${dns_netplan_conf}" /etc/netplan/20-kaercher-dns.yaml
+    else # off
+        log_info "tearing down kaercher net netplan"
+        sudo rm --verbose /etc/netplan/20-kaercher-dns.yaml 2>/dev/null || true
+    fi
+    sudo netplan apply
+}
+
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+    usage
+    exit 0
+else
+    if grep "root.*ro" /proc/mounts; then
+        sudo mount -o remount,rw /
+    fi
+    if [[ $1 == cl* ]]; then # clear proxy
+        clear_proxy_env
+        $SHELL
+    elif [[ $1 == st* ]] || [[ $1 == "show" ]]; then # show status
+        show_proxy_status
+    else # turn on|off
+        # all other functions assume the 'proxy' variable is set!
+        [[ "$1" == "on" ]] && proxy="$default_proxy" || proxy="$1"
+        message_proxy "$1"
+        apt_proxy "$1"
+        environment_file_proxy "$1"
+        export_file_proxy /data/inorbit/agent.env.sh "$1"
+        gnome_proxy "$1"
+        # for pre
+        if id -u pre &>/dev/null; then
+            export_file_proxy /home/pre/.bashrc "$1"
+            export_file_proxy /home/pre/.zshrc "$1"
+            git_proxy /home/pre/.gitconfig "$1"
+            wget_proxy /home/pre/.wgetrc "$1"
+        fi
+        # for root
+        export_file_proxy /root/.bashrc "$1"
+        export_file_proxy /root/.zshrc "$1"
+        git_proxy /root/.gitconfig "$1"
+        wget_proxy /root/.wgetrc "$1"
+        # if you are not pre
+        if [[ $USER != "pre" ]] && [[ $USER != "root" ]]; then
+            export_file_proxy "/home/$USER/.bashrc" "$1"
+            export_file_proxy "/home/$USER/.zshrc" "$1"
+            git_proxy "/home/$USER/.gitconfig" "$1"
+            wget_proxy "/home/$USER/.wgetrc" "$1"
+        fi
+        ipp_proxy "$1"
+        set_kaercher_dns "$1"
+
+        # keep this last as it takes the longest and impatient users might cancel it
+        docker_proxy "$1"
+    fi
+fi

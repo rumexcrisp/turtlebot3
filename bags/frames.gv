@@ -1,0 +1,9 @@
+digraph G {
+"base_footprint" -> "base_link"[label=" Broadcaster: /tf_base_link_to_base_footprint\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"base_link" -> "ti_mmwave"[label=" Broadcaster: /radar_baselink_0\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"map" -> "odom"[label=" Broadcaster: /static_tf_map_to_odom\nAverage rate: 10.197\nBuffer length: 4.805\nMost recent transform: 1648647697.931\nOldest transform: 1648647693.126\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1648647697.9075832"[ shape=plaintext ] ;
+}->"map";
+}
