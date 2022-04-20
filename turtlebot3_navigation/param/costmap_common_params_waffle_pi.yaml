@@ -4,9 +4,26 @@ raytrace_range: 3.5
 footprint: [[-0.205, -0.155], [-0.205, 0.155], [0.077, 0.155], [0.077, -0.155]]
 #robot_radius: 0.17
 
-inflation_radius: 1.0
+inflation_radius: 0.7
 cost_scaling_factor: 3.0
 
 map_type: costmap
-observation_sources: scan
-scan: {sensor_frame: base_scan, data_type: LaserScan, topic: scan, marking: true, clearing: true}
+
+obstacle_layer:
+  enabled: true
+  obstacle_range: 3.0
+  raytrace_range: 5.0
+  max_obstacle_height: 0.3
+  min_obstacle_height: -0.0
+  inflation_radius: 0.7
+  track_unknown_space: true
+  combination_method: 1
+  observation_sources: scan radar
+  scan: {sensor_frame: base_scan, data_type: LaserScan, topic: scan, marking: true, clearing: true}
+  # radar: {sensor_frame: ti_mmwave, data_type: PointCloud2, topic: /ti_mmwave/radar_scan_pcl, marking: true, clearing: false}
+  radar: {sensor_frame: ti_mmwave, data_type: PointCloud2, topic: /xyzi_filt_out , marking: true, clearing: true}
+
+inflation_layer:
+  enabled:              true
+  cost_scaling_factor:  10.0  # exponential rate at which the obstacle cost drops off (default: 10)
+  inflation_radius:     0.7  # max. distance from an obstacle at which costs are incurred for planning paths.

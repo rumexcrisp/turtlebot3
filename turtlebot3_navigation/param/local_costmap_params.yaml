@@ -12,3 +12,11 @@ local_costmap:
   height: 3
   resolution: 0.05
   
+  plugins:
+   - {name: static_layer,        type: "costmap_2d::StaticLayer"}
+   - {name: obstacle_layer,      type: "costmap_2d::ObstacleLayer"}
+   - {name: inflation_layer,     type: "costmap_2d::InflationLayer"}
+
+  # observation_sources: radar
+  # scan: {sensor_frame: base_scan, data_type: LaserScan, topic: scan, marking: true, clearing: true}
+  # radar: {sensor_frame: ti_mmwave, data_type: PointCloud, topic: /ti_mmwave/radar_scan_pcl, marking: true, clearing: true}
