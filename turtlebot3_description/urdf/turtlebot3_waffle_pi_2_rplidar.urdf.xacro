@@ -149,7 +149,7 @@
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin xyz="0.0 -0.02 0.068" rpy="0 0 0"/>
+    <origin xyz="0.0 -0.03 0.103" rpy="0 0 0"/>
   </joint>
 
   <link name="imu_link"/>
@@ -157,7 +157,7 @@
   <joint name="scan_joint" type="fixed">
     <parent link="base_link"/>
     <child link="base_scan"/>
-    <origin xyz="-0.095 -0.002 0.122" rpy="0 0 0"/>
+    <origin xyz="-0.095 -0.002 0.157" rpy="0 0 0"/>
   </joint>
 
   <link name="base_scan">
@@ -188,7 +188,7 @@
   <joint name="points2_joint" type="fixed">
     <parent link="base_link"/>
     <child link="base_points2"/>
-    <origin xyz="0.070 0 0.100" rpy="0 -0.0872 0"/>
+    <origin xyz="0.070 0 0.135" rpy="0 -0.0872 0"/>
   </joint>
 
   <link name="base_points2">
@@ -220,7 +220,7 @@
   <joint name="ti_mmwave_joint" type="fixed">
     <parent link="base_link"/>
     <child link="ti_mmwave"/>
-    <origin xyz="0.005 0 0.100" rpy="0 -0.0872 0"/>
+    <origin xyz="0.005 0 0.135" rpy="0 -0.0872 0"/>
   </joint>
 
   <link name="ti_mmwave">
@@ -249,7 +249,7 @@
   </link> -->
 
   <joint name="camera_joint" type="fixed">
-    <origin xyz="0.073 -0.011 0.084" rpy="0 0 0"/>
+    <origin xyz="0.06 0.07 0.095" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="camera_link"/>
   </joint>
@@ -263,7 +263,7 @@
     </collision>
   </link>
 
-  <joint name="camera_rgb_joint" type="fixed">
+  <!-- <joint name="camera_rgb_joint" type="fixed">
     <origin xyz="0.003 0.011 0.009" rpy="0 0 0"/>
     <parent link="camera_link"/>
     <child link="camera_rgb_frame"/>
@@ -275,6 +275,21 @@
     <parent link="camera_rgb_frame"/>
     <child link="camera_rgb_optical_frame"/>
   </joint>
-  <link name="camera_rgb_optical_frame"/>
+  <link name="camera_rgb_optical_frame"/> -->
+
+  <joint name="fisheye_camera_joint" type="fixed">
+    <origin xyz="0.06 -0.08 0.1" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="fisheye_camera_link"/>
+  </joint>
+
+  <link name="fisheye_camera_link">
+    <collision>
+      <origin xyz="0.005 0.011 0.013" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.015 0.030 0.027"/>
+      </geometry>
+    </collision>
+  </link>
 
 </robot>
