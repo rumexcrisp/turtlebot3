@@ -7,7 +7,7 @@ Panels:
         - /Global Options1
         - /TF1/Frames1
         - /TF1/Tree1
-        - /Map1/Status1
+        - /Map2
         - /Global Map1/Costmap1
         - /Global Map1/Planner1
         - /Local Map1/Polygon1
@@ -15,12 +15,10 @@ Panels:
         - /Local Map1/Planner1
         - /Cartographer1
         - /PointCloud21
-        - /PointCloud21/Status1
-        - /MarkerArray1
-        - /Image2
-        - /PointCloud25
+        - /PointCloud22
+        - /PointCloud24
       Splitter Ratio: 0.5
-    Tree Height: 631
+    Tree Height: 913
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -38,7 +36,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Image
+    SyncSource: PointCloud2
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -151,14 +149,6 @@ Visualization Manager:
           Value: false
         base_scan:
           Value: true
-        camera_color_frame:
-          Value: false
-        camera_color_optical_frame:
-          Value: false
-        camera_depth_frame:
-          Value: false
-        camera_depth_optical_frame:
-          Value: true
         camera_link:
           Value: false
         caster_back_left_link:
@@ -170,11 +160,11 @@ Visualization Manager:
         imu_link:
           Value: false
         map:
-          Value: true
+          Value: false
         odom:
           Value: false
         scanmatcher_frame:
-          Value: true
+          Value: false
         ti_mmwave:
           Value: true
         wheel_left_link:
@@ -196,12 +186,7 @@ Visualization Manager:
                 base_scan:
                   {}
                 camera_link:
-                  camera_color_frame:
-                    camera_color_optical_frame:
-                      {}
-                  camera_depth_frame:
-                    camera_depth_optical_frame:
-                      {}
+                  {}
                 caster_back_left_link:
                   {}
                 caster_back_right_link:
@@ -473,8 +458,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.5750000476837158
-        Min Value: -0.9750000238418579
+        Max Value: 0.17499999701976776
+        Min Value: 0.02500000037252903
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -482,7 +467,7 @@ Visualization Manager:
       Color: 0; 255; 0
       Color Transformer: AxisColor
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -493,11 +478,11 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.05000000074505806
       Style: Boxes
-      Topic: /raw_point_cloud_centers
+      Topic: /filtered_point_cloud_centers
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -510,7 +495,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0.25
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 0; 0
       Min Color: 71; 0; 0
@@ -521,39 +506,11 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.05000000074505806
       Style: Spheres
-      Topic: /ti_mmwave/radar_scan_pcl
+      Topic: /xyz_filt_out
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: false
-      Value: false
-    - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud2
-      Color: 255; 0; 0
-      Color Transformer: FlatColor
-      Decay Time: 0.25
-      Enabled: false
-      Invert Rainbow: false
-      Max Color: 0; 0; 0
-      Min Color: 0; 255; 0
-      Name: PointCloud2
-      Position Transformer: XYZ
-      Queue Size: 10
-      Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.05000000074505806
-      Style: Spheres
-      Topic: /ti_mmwave/radar_scan_pcl
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -582,16 +539,8 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: false
-    - Class: rviz/MarkerArray
-      Enabled: false
-      Marker Topic: /occupied_cells_vis_array
-      Name: MarkerArray
-      Namespaces:
-        {}
-      Queue Size: 100
-      Value: false
     - Class: rviz/Image
-      Enabled: true
+      Enabled: false
       Image Topic: /fisheye_camera/image_raw
       Max Value: 1
       Median window: 5
@@ -600,8 +549,8 @@ Visualization Manager:
       Normalize Range: true
       Queue Size: 1
       Transport Hint: compressed
-      Unreliable: false
-      Value: true
+      Unreliable: true
+      Value: false
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path
@@ -628,8 +577,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.145037293434143
-        Min Value: -0.01299981027841568
+        Max Value: 0.20458316802978516
+        Min Value: 0.11311716586351395
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -637,7 +586,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: AxisColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -648,11 +597,11 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.029999999329447746
       Style: Boxes
-      Topic: /realsense_x_filt_out
+      Topic: /realsense_xyz_filt_out
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -676,26 +625,21 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rviz/XYOrbit
-      Distance: 1.3723138570785522
+      Angle: -0.21000002324581146
+      Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Focal Point:
-        X: -0.11872610449790955
-        Y: -0.05700233578681946
-        Z: -5.066394805908203e-6
-      Focal Shape Fixed Size: true
-      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6947982311248779
+      Scale: 106.79825592041016
       Target Frame: <Fixed Frame>
-      Value: XYOrbit (rviz)
-      Yaw: 0.026761317625641823
+      Value: TopDownOrtho (rviz)
+      X: 3.038808584213257
+      Y: 2.547330617904663
     Saved: ~
 Window Geometry:
   Displays:
@@ -705,7 +649,7 @@ Window Geometry:
   Hide Right Dock: false
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000015b0000041afc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b00000300000000c700fffffffb0000000a0049006d0061006700650000000317000000cc0000001600fffffffb0000000a0049006d0061006700650100000341000001140000001600fffffffb0000000c00430061006d00650072006101000002f60000015f0000000000000000fb0000000a0049006d00610067006501000003380000011d000000000000000000000001000001000000041afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003b0000041a000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004a00000003efc0100000002fb0000000800540069006d00650000000000000004a00000042700fffffffb0000000800540069006d00650100000000000004500000000000000000000004d10000041a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000015b0000041afc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b0000041a000000c700fffffffb0000000a0049006d0061006700650000000317000000cc0000001600fffffffb0000000a0049006d0061006700650000000341000001140000001600fffffffb0000000c00430061006d00650072006101000002f60000015f0000000000000000fb0000000a0049006d00610067006501000003380000011d000000000000000000000001000001000000041afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003b0000041a000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004a00000003efc0100000002fb0000000800540069006d00650000000000000004a00000042700fffffffb0000000800540069006d00650100000000000004500000000000000000000004d10000041a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:

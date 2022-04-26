@@ -1,6 +1,7 @@
 <launch>
   <arg name="multi_robot_name" default=""/>
   <arg name="set_lidar_frame_id" default="base_scan"/>
+  <arg name="enable_fisheye" default="false"/>
 
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch">
     <arg name="multi_robot_name" value="$(arg multi_robot_name)"/>
@@ -20,7 +21,7 @@
     <param name="image_height" value="640"/>
   </node> -->
 
-  <include file="$(find video_stream_opencv)/launch/camera.launch" >
+  <include file="$(find video_stream_opencv)/launch/camera.launch" if="$(arg enable_fisheye)" >
     <!-- node name and ros graph name -->
     <arg name="camera_name" value="fisheye_camera" />
     <!-- means video device 0, /dev/video0 -->
