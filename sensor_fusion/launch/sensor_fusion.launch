@@ -1,0 +1,11 @@
+<launch>
+    <!-- <arg name="led_module" default="true" doc="Whether to launch the LED Module along with the Light Handler"/> -->
+
+    <!--launching the sensor_fusion handler-->
+    <node name="sensor_fusion" pkg="sensor_fusion" type="sensor_fusion" output="screen">
+        <!-- <rosparam command="load" file="$(arg animation_map)" /> -->
+        <remap from="scan_pcl" to="octomap_in" />
+    </node>
+
+    <node pkg="topic_tools" type="relay" name="radar_relay" output="screen" args="ti_mmwave/radar_scan_pcl octomap_in"/>
+</launch>
