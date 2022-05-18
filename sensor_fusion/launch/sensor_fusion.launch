@@ -4,8 +4,9 @@
     <!--launching the sensor_fusion handler-->
     <node name="sensor_fusion" pkg="sensor_fusion" type="sensor_fusion" output="screen">
         <!-- <rosparam command="load" file="$(arg animation_map)" /> -->
-        <remap from="scan_pcl" to="octomap_in" />
+        <!-- <remap from="scan_pcl" to="radar_laser_pcl" /> -->
     </node>
 
-    <node pkg="topic_tools" type="relay" name="radar_relay" output="screen" args="ti_mmwave/radar_scan_pcl octomap_in"/>
+    <node pkg="topic_tools" type="relay" name="radar_relay" output="screen" args="ti_mmwave/radar_scan_pcl radar_laser_pcl"/>
+    <node pkg="topic_tools" type="relay" name="camera_relay" output="screen" args="camera/depth/color/points_decimate radar_laser_pcl"/>
 </launch>

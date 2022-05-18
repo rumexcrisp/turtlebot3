@@ -9,7 +9,7 @@ SensorFusion::SensorFusion()
     m_realsense_subscriber = m_nh.subscribe<sensor_msgs::PointCloud2>("/camera/depth/color/points", 100, &SensorFusion::RealsenseCallback, this);
     m_pcl_publisher = m_nh.advertise<sensor_msgs::PointCloud2>("/scan_pcl", 100, false);
     m_realsense_publisher = m_nh.advertise<sensor_msgs::PointCloud2>("/camera/depth/color/points_decimate", 100, false);
-    m_tfListener.setExtrapolationLimit(ros::Duration(0.1));
+    // m_tfListener.setExtrapolationLimit(ros::Duration(0.1));
     // m_tf2Listener.setExtrapolationLimit(ros::Duration(0.1));
 }
 
@@ -35,7 +35,7 @@ void SensorFusion::RealsenseCallback(const sensor_msgs::PointCloud2::ConstPtr &c
     // Create the filtering object
     pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
     sor.setInputCloud(pcl_cloud);
-    sor.setLeafSize(0.1f, 0.1f, 0.1f);
+    sor.setLeafSize(0.1f, 0.1f, 0.1f); // y,z,x
     sor.filter(*pcl_cloud_filtered);
 
     m_realsense_publisher.publish(pcl_cloud_filtered);
