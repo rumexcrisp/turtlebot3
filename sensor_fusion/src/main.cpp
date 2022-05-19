@@ -4,7 +4,9 @@
 int main(int argc, char** argv) {
     ros::init(argc, argv, "sensor_fusion");
     
-    SensorFusion fusion;
+    ros::NodeHandle nh("~");
+    
+    SensorFusion fusion(nh);
     
     ros::spin();
     
