@@ -1,12 +1,13 @@
 <launch>
   <arg name="multi_robot_name" default=""/>
   <arg name="set_lidar_frame_id" default="base_scan"/>
+  <arg name="enable_lidar" default="true"/>
   <arg name="enable_fisheye" default="false"/>
 
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch">
     <arg name="multi_robot_name" value="$(arg multi_robot_name)"/>
   </include>
-  <include file="$(find rplidar_ros)/launch/rplidar.launch">
+  <include file="$(find rplidar_ros)/launch/rplidar.launch" if="$(arg enable_lidar)">
     <arg name="set_frame_id" value="$(arg set_lidar_frame_id)"/>
   </include>
   <!-- <include file="$(find turtlebot3_bringup)/launch/turtlebot3_lidar.launch">
