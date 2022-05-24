@@ -1,20 +1,20 @@
 <launch>
-  <arg name="multi_robot_name" default=""/>
-  <arg name="set_lidar_frame_id" default="base_scan"/>
-  <arg name="enable_lidar" default="true"/>
-  <arg name="enable_fisheye" default="false"/>
+  <arg name="multi_robot_name" default="" />
+  <arg name="set_lidar_frame_id" default="base_scan" />
+  <arg name="enable_lidar" default="true" />
+  <arg name="enable_fisheye" default="false" />
 
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch">
-    <arg name="multi_robot_name" value="$(arg multi_robot_name)"/>
+    <arg name="multi_robot_name" value="$(arg multi_robot_name)" />
   </include>
   <include file="$(find rplidar_ros)/launch/rplidar.launch" if="$(arg enable_lidar)">
-    <arg name="set_frame_id" value="$(arg set_lidar_frame_id)"/>
+    <arg name="set_frame_id" value="$(arg set_lidar_frame_id)" />
   </include>
   <!-- <include file="$(find turtlebot3_bringup)/launch/turtlebot3_lidar.launch">
     <arg name="set_frame_id" value="$(arg set_lidar_frame_id)"/>
   </include> -->
 
-  <node pkg="turtlebot3_bringup" type="turtlebot3_diagnostics" name="turtlebot3_diagnostics" output="screen"/>
+  <node pkg="turtlebot3_bringup" type="turtlebot3_diagnostics" name="turtlebot3_diagnostics" output="screen" />
 
   <!-- <node pkg="cv_camera" type="cv_camera_node" name="fisheye_camera" output="screen">
     <param name="rate" value="30.0"/>
@@ -22,13 +22,13 @@
     <param name="image_height" value="640"/>
   </node> -->
 
-  <include file="$(find video_stream_opencv)/launch/camera.launch" if="$(arg enable_fisheye)" >
+  <include file="$(find video_stream_opencv)/launch/camera.launch" if="$(arg enable_fisheye)">
     <!-- node name and ros graph name -->
     <arg name="camera_name" value="fisheye_camera" />
     <!-- means video device 0, /dev/video0 -->
     <arg name="video_stream_provider" value="0" />
     <!-- set camera fps to (if the device allows) -->
-    <arg name="set_camera_fps" value="30"/>
+    <arg name="set_camera_fps" value="30" />
     <!-- set buffer queue size of frame capturing to -->
     <arg name="buffer_queue_size" value="100" />
     <!-- throttling the publishing of frames to -->
@@ -43,9 +43,13 @@
     <!-- flip the image vertically -->
     <arg name="flip_vertical" value="false" />
     <!-- force a width and height, 0 means no forcing -->
-    <arg name="width" value="640"/>
-    <arg name="height" value="480"/>
+    <arg name="width" value="640" />
+    <arg name="height" value="480" />
     <!-- visualize on an image_view window the stream generated -->
     <arg name="visualize" value="false" />
-   </include>
+  </include>
+
+  <!-- image rectifying -->
+  <node name="image_proc" pkg="image_proc" type="image_proc" ns="fisheye_camera" if="$(arg enable_fisheye)"/>
+
 </launch>
