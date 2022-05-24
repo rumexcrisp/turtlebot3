@@ -30,7 +30,7 @@ options = {
   num_laser_scans = 1, -- /scan topic
   num_multi_echo_laser_scans = 0,
   num_subdivisions_per_laser_scan = 1,
-  num_point_clouds = 1, -- /point2 topic
+  num_point_clouds = 0, -- /points2 topic
   lookup_transform_timeout_sec = 0.2,
   submap_publish_period_sec = 0.3,
   pose_publish_period_sec = 5e-3,
@@ -74,5 +74,6 @@ POSE_GRAPH.constraint_builder.sampling_ratio = 0.03
 POSE_GRAPH.optimization_problem.ceres_solver_options.max_num_iterations = 10
 POSE_GRAPH.constraint_builder.min_score = 0.62
 POSE_GRAPH.constraint_builder.global_localization_min_score = 0.66
+POSE_GRAPH.global_sampling_ratio = 1
 
 return options
