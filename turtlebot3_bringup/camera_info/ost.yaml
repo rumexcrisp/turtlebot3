@@ -1,6 +1,6 @@
 image_width: 640
 image_height: 480
-camera_name: narrow_stereo
+camera_name: fisheye_camera
 camera_matrix:
   rows: 3
   cols: 3
@@ -8,6 +8,7 @@ camera_matrix:
             0.     ,  324.97416,  233.37464,
             0.     ,    0.     ,    1.     ]
 camera_model: plumb_bob
+distortion_model: plumb_bob
 distortion_coefficients:
   rows: 1
   cols: 5
