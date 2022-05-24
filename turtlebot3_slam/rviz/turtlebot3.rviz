@@ -12,7 +12,8 @@ Panels:
         - /Local Map1/Polygon1
         - /Local Map1/Costmap1
         - /Local Map1/Planner1
-      Splitter Ratio: 0.5
+        - /MeshDisplayCustom1
+      Splitter Ratio: 0.5536231994628906
     Tree Height: 913
   - Class: rviz/Selection
     Name: Selection
@@ -31,7 +32,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: radar_pcl
+    SyncSource: ""
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -106,6 +107,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        fisheye_camera_rviz_image_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         imu_link:
           Alpha: 1
           Show Axes: false
@@ -139,37 +145,27 @@ Visualization Manager:
         base_footprint:
           Value: false
         base_link:
-          Value: true
+          Value: false
         base_points2:
           Value: false
         base_scan:
-          Value: true
-        camera_color_frame:
-          Value: true
-        camera_color_optical_frame:
-          Value: true
-        camera_depth_frame:
-          Value: true
-        camera_depth_optical_frame:
-          Value: true
+          Value: false
         camera_link:
-          Value: true
+          Value: false
         caster_back_left_link:
           Value: false
         caster_back_right_link:
           Value: false
         fisheye_camera_link:
-          Value: false
+          Value: true
+        fisheye_camera_rviz_image_link:
+          Value: true
         imu_link:
           Value: false
-        map:
-          Value: true
         odom:
           Value: false
-        scanmatcher_frame:
-          Value: true
         ti_mmwave:
-          Value: true
+          Value: false
         wheel_left_link:
           Value: false
         wheel_right_link:
@@ -180,37 +176,30 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        map:
-          odom:
-            base_footprint:
-              base_link:
-                base_points2:
+        odom:
+          base_footprint:
+            base_link:
+              base_points2:
+                {}
+              base_scan:
+                {}
+              camera_link:
+                {}
+              caster_back_left_link:
+                {}
+              caster_back_right_link:
+                {}
+              fisheye_camera_link:
+                fisheye_camera_rviz_image_link:
                   {}
-                base_scan:
-                  {}
-                camera_link:
-                  camera_color_frame:
-                    camera_color_optical_frame:
-                      {}
-                  camera_depth_frame:
-                    camera_depth_optical_frame:
-                      {}
-                caster_back_left_link:
-                  {}
-                caster_back_right_link:
-                  {}
-                fisheye_camera_link:
-                  {}
-                imu_link:
-                  {}
-                ti_mmwave:
-                  {}
-                wheel_left_link:
-                  {}
-                wheel_right_link:
-                  {}
-          scanmatcher_frame:
-            {}
+              imu_link:
+                {}
+              ti_mmwave:
+                {}
+              wheel_left_link:
+                {}
+              wheel_right_link:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -608,11 +597,18 @@ Visualization Manager:
       Topic: /trajectory
       Unreliable: false
       Value: true
+    - Class: rviz_textured_quads/MeshDisplayCustom
+      Enabled: true
+      Image Topic: /fisheye_camera/image_rect_color
+      Meters per pixel: 0.0020000000949949026
+      Name: MeshDisplayCustom
+      Quad Frame: fisheye_camera_rviz_image_link
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: map
+    Fixed Frame: base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -632,25 +628,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 12.208311080932617
+      Distance: 1.219458818435669
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 3.2901434898376465
-        Y: 1.5983469486236572
-        Z: 1.0788440704345703e-5
+        X: -0.023266196250915527
+        Y: -0.048544660210609436
+        Z: 1.1216346138098743e-5
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.109793782234192
+      Pitch: 0.3197939395904541
       Target Frame: <Fixed Frame>
       Value: XYOrbit (rviz)
-      Yaw: 0.3617560565471649
+      Yaw: 4.153107643127441
     Saved: ~
 Window Geometry:
   Displays:
