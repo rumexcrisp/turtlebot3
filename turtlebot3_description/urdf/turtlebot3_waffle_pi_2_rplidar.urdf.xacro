@@ -301,9 +301,25 @@
 
   <link name="fisheye_camera_link">
     <collision>
-      <origin xyz="0.005 0.011 0.013" rpy="0 0 0"/>
+      <origin xyz="0.005 0.005 0.005" rpy="0 0 0"/>
       <geometry>
-        <box size="0.015 0.030 0.027"/>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="fisheye_camera_rviz_image_joint" type="fixed">
+    <!-- <origin xyz="0.06 -0.08 -0.1" rpy="-1.5708 0 -1.5708"/> -->
+    <origin xyz="0.209 0 -0.11" rpy="3.14159 0 -1.5707"/>
+    <parent link="fisheye_camera_link"/>
+    <child link="fisheye_camera_rviz_image_link"/>
+  </joint>
+
+  <link name="fisheye_camera_rviz_image_link">
+    <collision>
+      <origin xyz="0.1 0.2 0.3" rpy="0 0 0"/>
+      <geometry>
+        <box size="0 0 0"/>
       </geometry>
     </collision>
   </link>

@@ -16,6 +16,8 @@
     <arg name="configuration_basename" value="$(arg configuration_basename)"/>
   </include> -->
 
+  <node pkg="transform_image" type="transform_image.py" name="transform_image" output="screen" />
+
   <!-- rviz -->
   <group if="$(arg open_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
