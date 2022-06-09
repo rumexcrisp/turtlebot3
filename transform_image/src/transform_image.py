@@ -49,21 +49,24 @@ class image_converter:
         np_arr = np.fromstring(data.data, np.uint8)
         image_np = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-        lu = [3,335]
+        lu = [9,379]
         # lo = [188,76]
-        lo = [201,13]
+        lo = [270,13]
         # ro = [388,65]
-        ro = [394,9]
+        ro = [373,14]
         # ru = [520,261]
-        ru = [635,246]
+        ru = [640,373]
+
+        new_image_width = 38 * 6
+        new_image_height = 38 * 16
 
         rows,cols,ch = image_np.shape
         # pts1 = np.float32([[180,rows-150],[cols-180,rows-150],[0,rows],[cols,rows]])
         pts1 = np.float32([lo,ro,lu,ru])
-        pts2 = np.float32([[0,0],[266,0],[0,342],[266,342]])
+        pts2 = np.float32([[0,0],[new_image_width,0],[0,new_image_height],[new_image_width,new_image_height]])
 
         M = cv2.getPerspectiveTransform(pts1,pts2)
-        dst = cv2.warpPerspective(image_np,M,(266,342))
+        dst = cv2.warpPerspective(image_np,M,(new_image_width,new_image_height))
 
         cv2.circle(image_np,(int(lu[0]),int(lu[1])), 5, (0,0,255), -1) # lu
         cv2.circle(image_np,(int(lo[0]),int(lo[1])), 5, (0,0,255), -1) # lo
