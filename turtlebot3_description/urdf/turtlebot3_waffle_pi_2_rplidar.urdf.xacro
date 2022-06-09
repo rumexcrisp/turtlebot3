@@ -294,7 +294,7 @@
   <link name="camera_rgb_optical_frame"/> -->
 
   <joint name="fisheye_camera_joint" type="fixed">
-    <origin xyz="0.06 -0.08 0.1" rpy="0 0 0"/>
+    <origin xyz="0.06 -0.035 0.1" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="fisheye_camera_link"/>
   </joint>
@@ -310,7 +310,7 @@
 
   <joint name="fisheye_camera_rviz_image_joint" type="fixed">
     <!-- <origin xyz="0.06 -0.08 -0.1" rpy="-1.5708 0 -1.5708"/> -->
-    <origin xyz="0.209 0 -0.11" rpy="3.14159 0 -1.5707"/>
+    <origin xyz="0.342 0 -0.11" rpy="3.14159 0 -1.5707"/> <!-- x = 0.342 = 608px height / 2 + 38mm abstand-->
     <parent link="fisheye_camera_link"/>
     <child link="fisheye_camera_rviz_image_link"/>
   </joint>
