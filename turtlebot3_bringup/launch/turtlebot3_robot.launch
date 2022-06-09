@@ -2,7 +2,7 @@
   <arg name="multi_robot_name" default="" />
   <arg name="set_lidar_frame_id" default="base_scan" />
   <arg name="enable_lidar" default="true" />
-  <arg name="enable_fisheye" default="false" />
+  <arg name="enable_fisheye" default="true" />
 
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch">
     <arg name="multi_robot_name" value="$(arg multi_robot_name)" />
@@ -51,5 +51,8 @@
 
   <!-- image rectifying -->
   <node name="image_proc" pkg="image_proc" type="image_proc" ns="fisheye_camera" if="$(arg enable_fisheye)"/>
+
+  <!-- image transforming -->
+  <node name="transform_image" pkg="transform_image" type="transform_image.py" if="$(arg enable_fisheye)"/>
 
 </launch>
