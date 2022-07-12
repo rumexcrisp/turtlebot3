@@ -5,6 +5,10 @@
   <arg name="enable_lidar" default="true" />
   <arg name="enable_fisheye" default="true" />
   <arg name="fisheye_device" default="0" doc="v4l2-ctl --list-devices"/>
+  <arg name="enable_sensors" default="true" />
+  <arg name="enable_mapping" default="true" />
+  <arg name="enable_slam" default="true" />
+
 
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_robot.launch">
     <arg name="multi_robot_name" value="$(arg multi_robot_name)"/>
@@ -14,10 +18,10 @@
   </include>
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch"/>
 
-  <include file="$(find ti_mmwave_rospkg)/launch/ti_mmwave_sensor.launch"/>
-  <include file="$(find realsense2_camera)/launch/rs_camera_2.launch"/>
+  <include file="$(find ti_mmwave_rospkg)/launch/ti_mmwave_sensor.launch" if="$(arg enable_sensors)"/>
+  <include file="$(find realsense2_camera)/launch/rs_camera_2.launch" if="$(arg enable_sensors)"/>
 
-  <include file="$(find turtlebot3_slam)/launch/turtlebot3_hector.launch"/>
-  <include file="$(find turtlebot_mmwave_launchers)/launch/single_sensor/radar_mapping.launch"/>
+  <include file="$(find turtlebot3_slam)/launch/turtlebot3_hector.launch" if="$(arg enable_slam)"/>
+  <include file="$(find turtlebot_mmwave_launchers)/launch/single_sensor/radar_mapping.launch" if="$(arg enable_mapping)"/>
 
 </launch>

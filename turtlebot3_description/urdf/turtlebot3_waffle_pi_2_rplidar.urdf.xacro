@@ -249,10 +249,26 @@
   </link> -->
 
   <!-- radar nach vorne mitte gedreht 10grad links -->
-  <joint name="ti_mmwave_joint" type="fixed">
+  <!-- <joint name="ti_mmwave_joint" type="fixed">
     <parent link="base_link"/>
     <child link="ti_mmwave"/>
     <origin xyz="0.006 0 0.135" rpy="0 -0.0872 0.1745"/>
+  </joint>
+
+  <link name="ti_mmwave">
+    <collision>
+      <origin xyz="0.005 0.011 0.013" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.015 0.030 0.027"/>
+      </geometry>
+    </collision>
+  </link> -->
+
+  <!-- radar nach vorne mitte gedreht 15grad links -->
+  <joint name="ti_mmwave_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="ti_mmwave"/>
+    <origin xyz="0.006 0 0.135" rpy="0 -0.0872 0.2618"/>
   </joint>
 
   <link name="ti_mmwave">
