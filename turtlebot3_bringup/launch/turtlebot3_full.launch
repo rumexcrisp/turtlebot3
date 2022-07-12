@@ -2,25 +2,22 @@
   <arg name="multi_robot_name" default=""/>
   <arg name="set_lidar_frame_id" default="base_scan"/>
   <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="enable_lidar" default="true" />
+  <arg name="enable_fisheye" default="true" />
+  <arg name="fisheye_device" default="0" doc="v4l2-ctl --list-devices"/>
 
-  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_core.launch">
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_robot.launch">
     <arg name="multi_robot_name" value="$(arg multi_robot_name)"/>
+    <arg name="enable_lidar" value="$(arg enable_lidar)" />
+    <arg name="enable_fisheye" value="$(arg enable_fisheye)" />
+    <arg name="fisheye_device" value="$(arg fisheye_device)"/>
   </include>
-  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_lidar.launch">
-    <arg name="set_frame_id" value="$(arg set_lidar_frame_id)"/>
-  </include>
-  <node pkg="turtlebot3_bringup" type="turtlebot3_diagnostics" name="turtlebot3_diagnostics" output="screen"/>
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch"/>
 
-  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
-    <param name="use_gui" value="true"/>
-    <param name="rate" value="50"/>
-  </node>
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
-    <param name="publish_frequency" type="double" value="50.0" />
-    <param name="tf_prefix" value="$(arg multi_robot_name)"/>
-  </node>
+  <include file="$(find ti_mmwave_rospkg)/launch/ti_mmwave_sensor.launch"/>
+  <include file="$(find realsense2_camera)/launch/rs_camera_2.launch"/>
 
-  <group if = "$(eval model == 'waffle_pi')">
-    <include file="$(find turtlebot3_bringup)/launch/turtlebot3_rpicamera.launch"/>
-  </group>
+  <include file="$(find turtlebot3_slam)/launch/turtlebot3_hector.launch"/>
+  <include file="$(find turtlebot_mmwave_launchers)/launch/single_sensor/radar_mapping.launch"/>
+
 </launch>
